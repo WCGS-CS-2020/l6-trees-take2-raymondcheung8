@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace L6Trees
+namespace Trees
 {
-
     /*
      * Tasks:
      * 1) Complete the implementation of the Node methods
@@ -14,15 +17,121 @@ namespace L6Trees
     class Node
     {
         // Attributes
-        private  Node left;
-        private  Node right;
+        private Node left;
+        private Node right;
         private string item;
+        private Node root;
 
         //Methods
-        public Node(string item) { }
-        public void addNode(string item) {}
-        public Boolean findNode(string item) { return true; }
-        public Boolean deleteNote(string item) { return true; }
+        public Node(string item)
+        {
+            this.left = null;
+            this.right = null;
+            this.item = item;
+        }
+        public void addNode(string item)
+        {
+            if (root == null) root = this;
+
+            Node current = root;
+            bool added = false;
+            while (!added)
+            {
+                int compOut = string.Compare(item, this.item);          // Comparison Outcome
+                // -1 means string1 is less than string2
+                // 0 means string 1 is the same as string2
+                // 1 means string 1 is greater than string2
+
+                if (compOut == -1 || compOut == 0)
+                {
+                    if (this.left != null) current = current.left;
+                    else
+                    {
+                        this.left = new Node(item);
+                        added = true;
+                    }
+                }
+                else if (compOut == 1)
+                {
+                    if (this.right != null) current = current.right;
+                    else
+                    {
+                        this.right = new Node(item);
+                        added = true;
+                    }
+                }
+            }
+        }
+        public Boolean findNode(string item)
+        {
+            if (root == null) root = this;
+
+            Node current = root;
+            bool found = false;
+            int compOut;
+            while (!found)
+            {
+                compOut = string.Compare(item, this.item);          // Comparison Outcome
+                // -1 means string1 is less than string2
+                // 0 means string 1 is the same as string2
+                // 1 means string 1 is greater than string2
+
+                if (compOut == 0) found = true;
+                if (compOut == -1)
+                {
+                    if (this.left != null) current = current.left;
+                    else break;
+                }
+                else if (compOut == 1)
+                {
+                    if (this.right != null) current = current.right;
+                    else break;
+                }
+            }
+            return found;
+        }
+        public void deleteNote(string item)
+        {
+            if (root == null) root = this;
+
+            Node current = root;
+            Node previous = null;
+            bool found = false;
+            int compOut = -2;
+            int prevCompOut = -2;
+            while (!found)
+            {
+                prevCompOut = compOut;
+                compOut = string.Compare(item, this.item);          // Comparison Outcome
+                // -1 means string1 is less than string2
+                // 0 means string 1 is the same as string2
+                // 1 means string 1 is greater than string2
+
+                if (compOut == 0) found = true;
+                if (compOut == -1)
+                {
+                    if (this.left != null)
+                    {
+                        previous = current;
+                        current = current.left;
+                    }
+                    else break;
+                }
+                else if (compOut == 1)
+                {
+                    if (this.right != null)
+                    {
+                        previous = current;
+                        current = current.right;
+                    }
+                    else break;
+                }
+            }
+
+            if (found && prevCompOut == -1) previous.left = null;
+            else if (found && prevCompOut == 1) previous.right = null;
+            else Console.WriteLine("Item not found!");
+        }
         void printTree() { }
     }
 
